@@ -10,16 +10,26 @@
 
   </head>
   <body>
-    <div class="controls">
-      <label> 
-        <input class="control width" data-handle="setWidth" type="text" size="4" /> width
-      </label>
-      <label> 
-        <input class="control height" data-handle="setHeight" type="text" size="4" /> height
-      </label>
- 
+    <div id="main">
+      <div class="controls">
+        <label> 
+          <input class="control width" data-handle="setWidth" data-source="width" type="text" size="4" /> width
+        </label>
+        <label> 
+          <input class="control height" data-handle="setHeight" data-source="height" type="text" size="4" /> height
+        </label>
+
+        <div class="form-group">
+          <label for="sel1">Tool:</label>
+          <select id="sel1" class="control tool form-control" data-handle="setTool" data-source="tool">
+            <option>Pixel</option>
+            <option>Grid</option>
+          </select>
+        </div>
+
+      </div>
+      <canvas id="hetCanvas"></canvas>
     </div>
-    <canvas id="hetCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./js/main.js"></script>
   </body>

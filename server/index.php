@@ -15,5 +15,6 @@ if (isset($_REQUEST['set']) ){
   }
 }
 
-echo json_encode($_SESSION);
+header('Content-Type: application/json');
+echo json_encode($_SESSION,JSON_FORCE_OBJECT);
 

@@ -3,21 +3,80 @@
   var c = document.getElementById("hetCanvas");
   var offLeft = c.offsetLeft,
       offTop = c.offsetTop;
-  var ctx = c.getContext('2d');
 
-  var Pixel = function(){
-    this.commit = function(x,y,ctx){
-      ctx.fillStyle="#FF0000";
-      ctx.fillRect(x,y,10,10);
-    }
-  };
-  var tool = new Pixel();
+  var settings = { 
+    "set" : 1,
+    "width" : 100,
+    "height" : 100,
+    "tool" : "Pixel",
+  }; 
+  
+  var canvas = (function(c){
+    var ctx = c.getContext('2d');
+    var imgData;
 
+    var copy = function(){
+      imgData = canvas.ctx.getImageData(0,0,c.width,c.height);
+    };
 
+    var paste = function(){
+      canvas.ctx.putImageData(imgData, 0,0)
+    };
  
-  var editor = (function(ctx,c,tool) {
-    var drawing = false; 
-    $(document).mousedown(function(){
+    var pub = {
+      "c" : c,
+      "ctx" : ctx,
+      "update" : function(){
+        copy();
+        c.height = settings.height;
+        c.width = settings.width;
+        paste();
+        
+      }
+    };
+
+    return pub;
+  })(c);
+ 
+  var tool = (function(){
+    var tools = {
+      "Pixel" : function(){
+        this.commit = function(x,y){
+          canvas.ctx.fillStyle="#FF0000";
+          canvas.ctx.fillRect(x,y,10,10);
+        }
+      },
+      
+      "Grid" : function(){
+        this.commit = function(x,y){
+          canvas.ctx.fillStyle="#FFFFFF";
+          canvas.ctx.fillRect(x,y,20,20);
+        }
+      }
+    }
+
+    var currentTool = new tools['Pixel']();
+    var pub = {
+      "commit":function(x,y){
+        currentTool.commit(x,y);
+      },
+      "update":function(){
+        console.log(settings['tool']);
+        var name =  settings['tool'];
+        console.log(name) 
+        currentTool = new tools[name]();
+
+      }
+    }
+    return pub;
+  })();
+  
+ 
+  var editor = (function(tool) {
+    var drawing = false;
+    
+    $(document).mousedown(function(e){
+      commitTool(e);
       drawing = true; 
     });
 
@@ -25,77 +84,101 @@
       drawing = false;
     })
 
-    $(c).mousemove(function(e){
+    $(document).mousemove(function(e){
       if (drawing) commitTool(e); 
     });
-    
-    $(c).click(commitTool);
     
     var commitTool = function(e){
       var x = e.pageX - offLeft,
           y = e.pageY - offTop;
-      tool.commit(x,y,ctx);
+      tool.commit(x,y);
     }
 
     var pub = {
-      resize:function(w,h){
-
-      }
+      update:function(){}
     }    
     return pub; 
-  })(ctx,c,tool);
-  
-  var controls = (function(editor) {
-    var imgData;
-    var set = function(name,value){
-      var data = {"set":1};
-      data[name] = value;
-      $.ajax({
-        "method":"POST",
-        "url":"./server/",
-        "data":data
-      }).done(function(resp){
-          console.log(resp);
-      });
-    };
+  })(tool);
  
-    var copy = function(){
-      imgData = ctx.getImageData(0,0,c.width,c.height);
-    };
 
-    var paste = function(){
-      ctx.putImageData(imgData, 0,0)
-    };
-    
+  /* control panel */ 
+  var controls = (function(editor) {
+    var $inputs = $('input.control,select.control');
     var handlers = {
       setWidth : function() {
-        copy();
-        set('width',this.value);
-        c.width = this.value;
-        paste();
+        broadCaster.set('width',this.value);
       },
 
       setHeight : function() {
-        copy();
-        set('height',this.value);
-        c.height = this.value; 
-        paste();
+        broadCaster.set('height',this.value);
+      },
+      
+      setTool : function(){
+        broadCaster.set('tool',this.value);
       }
     };
 
-    $('input.control').change(function(){ 
+    $inputs.change(function(){ 
       handlers[$(this).data('handle')].apply(this);
     });  
 
-
-
+    var pub = {
+      update:function(){
+        $inputs.each(function(){
+          var relevantSetting = $(this).data('source');
+          if(settings[relevantSetting] != $(this).val()){
+            $(this).val(settings[relevantSetting]);
+          }  
+        })
+      }
+    }
+    return pub;
   })(editor);
 
+
+  var broadCaster = (function(){
+    var updateClient = function(){
+      editor.update();
+      tool.update(); 
+      controls.update(); 
+      canvas.update();
+    };
+
+    var set = function(name,value){
+      settings[name] = value;
+      $.ajax({
+        "method":"POST",
+        "url":"./server/",
+        "data":settings
+      }).done(function(resp){
+          console.log(resp);
+          updateClient();
+      });
+    };
+ 
+    $.get('./server/',function(resp){
+      for (var x in resp) settings[x] = resp[x];
+      
+      settings['set'] = 1; 
+      updateClient();
+      $('#main').css('opacity',1)
+    });
+    
+    var pub = {
+      "set":set
+      
+    }
+    return pub; 
+    
+  }());
+
+
+/*
   window.onbeforeunload = function() {
       return true;
   };
 
-
+*/
 
 })();
 

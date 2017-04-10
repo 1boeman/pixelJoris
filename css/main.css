@@ -2,6 +2,10 @@ body  {
   background:black;
   color:white;
 }
+#main{
+  opacity:0.1;
+  transition: all 1s ease-in-out;
+}
 
 #hetCanvas {
   border:1px solid white; 
