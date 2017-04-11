@@ -1,13 +1,15 @@
 (function() {
 
   var c = document.getElementById("hetCanvas");
-  var offLeft = c.offsetLeft,
-      offTop = c.offsetTop;
+  var container = document.getElementById("canvas-container");
+  var offLeft = container.offsetLeft,
+      offTop = container.offsetTop;
 
   var settings = { 
     "set" : 1,
     "width" : 100,
     "height" : 100,
+    "gridWidth" : 20,
     "tool" : "Pixel",
   }; 
   
@@ -37,7 +39,7 @@
 
     return pub;
   })(c);
- 
+
   var tool = (function(){
     var tools = {
       "Pixel" : function(){
@@ -46,26 +48,58 @@
           canvas.ctx.fillRect(x,y,10,10);
         }
       },
-      
+ 
       "Grid" : function(){
+
+        canvas.ctx.fillStyle="#FFFFFF";
+
+        var $overlay = $('<canvas id="overlay" />');
+        $('#canvas-container').append($overlay);
+        $overlay[0].width = canvas.c.width;
+        $overlay[0].height = canvas.c.height;
+        var octx = $overlay[0].getContext('2d');
+        var horizontalBlox = Math.ceil(canvas.c.width/settings.gridWidth);
+        var verticalBlox = Math.ceil(canvas.c.height/settings.gridWidth);
+        var block,i,j,x,y;  
+        var virtualGrid = [];         
+        octx.strokeStyle="green";
+        for (i = 0; i < verticalBlox; i++) {
+          for (j=0; j < horizontalBlox; j++) {
+            x = (j * settings.gridWidth);
+            y = (i * settings.gridWidth);
+
+            octx.rect(x,y,settings.gridWidth,settings.gridWidth);   
+            virtualGrid.push([x,y]); 
+          }
+        }
+        
+        octx.stroke();
+ 
         this.commit = function(x,y){
-          canvas.ctx.fillStyle="#FFFFFF";
-          canvas.ctx.fillRect(x,y,20,20);
+          // collision detection
+          for (var i = 0; i < virtualGrid.length; i++){
+            if ((x > virtualGrid[i][0] && x <= virtualGrid[i][0]+settings.gridWidth) // x-match
+                  && (y > virtualGrid[i][1] && y <= virtualGrid[i][1]+settings.gridWidth)){ //ymatch           
+              canvas.ctx.fillRect(virtualGrid[i][0],virtualGrid[i][1],
+                settings.gridWidth,
+                settings.gridWidth
+              );
+              break; 
+            } 
+          }
         }
       }
     }
 
-    var currentTool = new tools['Pixel']();
+    var currentTool = new tools[settings.tool]();
     var pub = {
       "commit":function(x,y){
         currentTool.commit(x,y);
       },
       "update":function(){
-        console.log(settings['tool']);
+        $('#overlay').remove();
         var name =  settings['tool'];
-        console.log(name) 
         currentTool = new tools[name]();
-
       }
     }
     return pub;
@@ -139,9 +173,10 @@
   var broadCaster = (function(){
     var updateClient = function(){
       editor.update();
-      tool.update(); 
       controls.update(); 
       canvas.update();
+      tool.update(); 
+ 
     };
 
     var set = function(name,value){

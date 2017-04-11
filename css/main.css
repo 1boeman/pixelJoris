@@ -6,6 +6,31 @@ body  {
   opacity:0.1;
   transition: all 1s ease-in-out;
 }
+.gridBlock {
+  position:absolute;
+  border-bottom:1px solid green;
+  border-right:1px solid green;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+#canvas-container{
+  position:relative;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+
+}
+
+#overlay{
+  position:absolute; 
+  top:0px;
+  left:0px;
+}
 
 #hetCanvas {
   border:1px solid white; 
