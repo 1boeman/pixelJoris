@@ -12,34 +12,41 @@
   <body>
     <div id="main">
       <div class="controls">
-        <label>Width</label>
-        <input class="control width" data-handle="setWidth" data-source="width" type="text" size="4" />
-        <label>Height</label>
-        <input class="control height" data-handle="setHeight" data-source="height" type="text" size="4" /> 
-        <label for="sel1">Tool:</label>
-        <select id="sel1" class="control tool form-control" data-handle="setTool" data-source="tool">
-          <option>Pixel</option>
-          <option>Grid</option>
-        <select>
-        <label>Size:</label>
-        <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="text" size="4" /> 
-
-        <label>Color:</label>
-          <input type="text" class="jscolor control color" data-handle="setColor" data-source="color" value="#FFFFFF" />
-
-        <div>
-
-
-        <a id="downloadLnk" class="button" download="pixeljoris.jpg" data-handle="downloadFile"><button>Download</button></a>
+        <div class="control-group"> 
+          <label>Width</label>
+          <input class="control width" data-handle="setWidth" data-source="width" type="text" size="4" />
         </div>
-      </div>
+        <div class="control-group"> 
+          <label>Height</label>
+          <input class="control height" data-handle="setHeight" data-source="height" type="text" size="4" />
+        </div>
+        <div class="control-group"> 
+          <label for="sel1">Tool:</label>
+          <select id="sel1" class="control tool form-control" data-handle="setTool" data-source="tool">
+            <option>Pixel</option>
+            <option>Grid</option>
+          <select>
+        </div>
+        <div class="control-group"> 
+          <label>Size:</label>
+          <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="text" size="4" /> 
+        </div>
+        <div class="control-group"> 
+          <div class="color-select-container">
+            <label>Color:</label>
+            <input type="color" class="control color" data-handle="setColor" data-source="color" value="#FFFFFF" />
+            <div id="colorHistory"></div>
+          </div>
+        </div>
+        <div class="control-group">
+          <a id="downloadLnk" class="button" download="pixeljoris.jpg" data-handle="downloadFile"><button>Download</button></a>
+        </div>
       </div>  
       <div id="canvas-container">
           <canvas id="hetCanvas"></canvas>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="./js/jscolor.min.js"></script>
     <script src="./js/main.js"></script>
   </body>
 </html>

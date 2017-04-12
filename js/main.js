@@ -9,7 +9,7 @@
     "set" : 1,
     "width" : 100,
     "height" : 100,
-    "color" :'FFFFFF', 
+    "color" :'#FFFFFF', 
     "gridWidth" : 20,
     "tool" : "Pixel",
   }; 
@@ -43,7 +43,7 @@
   var tool = (function(){
     var tools = {
       "Pixel" : function(){
-        canvas.ctx.fillStyle='#'+settings.color;
+        canvas.ctx.fillStyle=settings.color;
         var w = settings.gridWidth;
         this.commit = function(x,y){
           canvas.ctx.fillRect(x,y,w,w);
@@ -51,7 +51,7 @@
       },
  
       "Grid" : function(){
-        canvas.ctx.fillStyle='#'+settings.color;
+        canvas.ctx.fillStyle=settings.color;
         var w = Math.floor(parseFloat(settings.gridWidth));
         var $overlay = $('<canvas id="overlay" />');
         $('#canvas-container').append($overlay);
@@ -113,7 +113,7 @@
 
     $(document).mouseup(function(){
       drawing = false;
-    })
+    });
 
     $(document).mousemove(function(e){
       if (drawing) commitTool(e); 
@@ -123,11 +123,11 @@
       var x = e.pageX - offLeft,
           y = e.pageY - offTop;
       tool.commit(x,y);
-    }
+    };
 
     var pub = {
       update:function(){}
-    }    
+    };   
     return pub; 
   })(tool);
  
@@ -147,9 +147,17 @@
         broadCaster.set('gridWidth',this.value); 
       },
       setColor : function (){
+        console.log(this.value)
+        var colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+this.value+'" style="background:'+this.value+'" />');     
+        colorHistoryBlock.click(function(){
+          $('.color').val($(this).data('color')).trigger('change');
+        });
+        $('#colorHistory').prepend(colorHistoryBlock);
         broadCaster.set('color',this.value); 
       },
       setWidth : function() {
+        var w = Math.ceil(parseFloat(this.value));
+        w = w > 1 ? w : 1;  
         broadCaster.set('width',this.value);
       },
       setHeight : function() {
