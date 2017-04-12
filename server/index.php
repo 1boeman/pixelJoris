@@ -7,7 +7,7 @@ function set( $name, $value ){
 
 
 if (isset($_REQUEST['set']) ){
-  $settings = array('width','height','tool');
+  $settings = array('width','height','tool','color','gridWidth');
   foreach($_REQUEST as $name => $value){
     if (in_array($name, $settings)) {
       set($name, $value);

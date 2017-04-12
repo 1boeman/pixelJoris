@@ -9,6 +9,7 @@
     "set" : 1,
     "width" : 100,
     "height" : 100,
+    "color" :'FFFFFF', 
     "gridWidth" : 20,
     "tool" : "Pixel",
   }; 
@@ -33,7 +34,6 @@
         c.height = settings.height;
         c.width = settings.width;
         paste();
-        
       }
     };
 
@@ -43,32 +43,32 @@
   var tool = (function(){
     var tools = {
       "Pixel" : function(){
+        canvas.ctx.fillStyle='#'+settings.color;
+        var w = settings.gridWidth;
         this.commit = function(x,y){
-          canvas.ctx.fillStyle="#FF0000";
-          canvas.ctx.fillRect(x,y,10,10);
+          canvas.ctx.fillRect(x,y,w,w);
         }
       },
  
       "Grid" : function(){
-
-        canvas.ctx.fillStyle="#FFFFFF";
-
+        canvas.ctx.fillStyle='#'+settings.color;
+        var w = Math.floor(parseFloat(settings.gridWidth));
         var $overlay = $('<canvas id="overlay" />');
         $('#canvas-container').append($overlay);
         $overlay[0].width = canvas.c.width;
         $overlay[0].height = canvas.c.height;
         var octx = $overlay[0].getContext('2d');
-        var horizontalBlox = Math.ceil(canvas.c.width/settings.gridWidth);
-        var verticalBlox = Math.ceil(canvas.c.height/settings.gridWidth);
+        var horizontalBlox = Math.ceil(canvas.c.width/w);
+        var verticalBlox = Math.ceil(canvas.c.height/w);
         var block,i,j,x,y;  
         var virtualGrid = [];         
         octx.strokeStyle="green";
         for (i = 0; i < verticalBlox; i++) {
           for (j=0; j < horizontalBlox; j++) {
-            x = (j * settings.gridWidth);
-            y = (i * settings.gridWidth);
+            x = (j * w);
+            y = (i * w);
 
-            octx.rect(x,y,settings.gridWidth,settings.gridWidth);   
+            octx.rect(x,y,w,w);   
             virtualGrid.push([x,y]); 
           }
         }
@@ -78,12 +78,9 @@
         this.commit = function(x,y){
           // collision detection
           for (var i = 0; i < virtualGrid.length; i++){
-            if ((x > virtualGrid[i][0] && x <= virtualGrid[i][0]+settings.gridWidth) // x-match
-                  && (y > virtualGrid[i][1] && y <= virtualGrid[i][1]+settings.gridWidth)){ //ymatch           
-              canvas.ctx.fillRect(virtualGrid[i][0],virtualGrid[i][1],
-                settings.gridWidth,
-                settings.gridWidth
-              );
+            if ((x > virtualGrid[i][0] && x <= virtualGrid[i][0]+w) // x-match
+                  && (y > virtualGrid[i][1] && y <= virtualGrid[i][1]+w)){ //ymatch           
+              canvas.ctx.fillRect(virtualGrid[i][0],virtualGrid[i][1],w,w);
               break; 
             } 
           }
@@ -137,16 +134,27 @@
 
   /* control panel */ 
   var controls = (function(editor) {
-    var $inputs = $('input.control,select.control');
+    var $inputs = $('.controls .control');
+    var $buttons = $('.controls .button');
+
     var handlers = {
+      downloadFile: function(){
+        console.log(this)
+        var dt = canvas.c.toDataURL('image/jpeg');
+        this.href = dt;
+      },
+      setGridWidth :function(){
+        broadCaster.set('gridWidth',this.value); 
+      },
+      setColor : function (){
+        broadCaster.set('color',this.value); 
+      },
       setWidth : function() {
         broadCaster.set('width',this.value);
       },
-
       setHeight : function() {
         broadCaster.set('height',this.value);
       },
-      
       setTool : function(){
         broadCaster.set('tool',this.value);
       }
@@ -155,6 +163,11 @@
     $inputs.change(function(){ 
       handlers[$(this).data('handle')].apply(this);
     });  
+    
+    $buttons.click(function(){ 
+      handlers[$(this).data('handle')].apply(this);
+    });  
+   
 
     var pub = {
       update:function(){
@@ -176,7 +189,6 @@
       controls.update(); 
       canvas.update();
       tool.update(); 
- 
     };
 
     var set = function(name,value){
@@ -204,7 +216,6 @@
       
     }
     return pub; 
-    
   }());
 
 
