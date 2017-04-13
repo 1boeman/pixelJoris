@@ -42,6 +42,12 @@
 
   var tool = (function(){
     var tools = {
+      "Bucket" : function(){
+        canvas.ctx.fillStyle=settings.color;
+        this.commit = function(x,y){
+          canvas.ctx.fillFlood(x,y); 
+        }      
+      },
       "Pixel" : function(){
         canvas.ctx.fillStyle=settings.color;
         var w = settings.gridWidth;
@@ -120,6 +126,7 @@
     });
     
     var commitTool = function(e){
+      // @todo check if inside canvas    
       var x = e.pageX - offLeft,
           y = e.pageY - offTop;
       tool.commit(x,y);
@@ -131,7 +138,6 @@
     return pub; 
   })(tool);
  
-
   /* control panel */ 
   var controls = (function(editor) {
     var $inputs = $('.controls .control');
@@ -176,7 +182,6 @@
       handlers[$(this).data('handle')].apply(this);
     });  
    
-
     var pub = {
       update:function(){
         $inputs.each(function(){
