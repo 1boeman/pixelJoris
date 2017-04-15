@@ -73,7 +73,6 @@
           for (j=0; j < horizontalBlox; j++) {
             x = (j * w);
             y = (i * w);
-
             octx.rect(x,y,w,w);   
             virtualGrid.push([x,y]); 
           }
@@ -111,25 +110,30 @@
  
   var editor = (function(tool) {
     var drawing = false;
-    
-    $(document).mousedown(function(e){
-      commitTool(e);
+    var $cc = $('#canvas-container');
+    $cc.mousedown(function(e){
+      history.store(); 
       drawing = true; 
+      commitTool(e);
     });
 
-    $(document).mouseup(function(){
-      drawing = false;
+    $cc.mouseup(function(e){
+     drawing = false;
     });
 
-    $(document).mousemove(function(e){
+    $cc.mousemove(function(e){
       if (drawing) commitTool(e); 
     });
     
     var commitTool = function(e){
-      // @todo check if inside canvas    
       var x = e.pageX - offLeft,
           y = e.pageY - offTop;
-      tool.commit(x,y);
+      
+      // check if event took place inside canvas area
+      if ((x >= 0 && x <= settings.width)   
+           && (y >= 0 && y <= settings.width)) {
+        tool.commit(x,y);
+      }
     };
 
     var pub = {
@@ -144,8 +148,10 @@
     var $buttons = $('.controls .button');
 
     var handlers = {
+      undo: function(){
+        history.undo();  
+      },
       downloadFile: function(){
-        console.log(this)
         var dt = canvas.c.toDataURL('image/jpeg');
         this.href = dt;
       },
@@ -153,7 +159,6 @@
         broadCaster.set('gridWidth',this.value); 
       },
       setColor : function (){
-        console.log(this.value)
         var colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+this.value+'" style="background:'+this.value+'" />');     
         colorHistoryBlock.click(function(){
           $('.color').val($(this).data('color')).trigger('change');
@@ -195,7 +200,9 @@
     return pub;
   })(editor);
 
-
+  /* broadcaster tells other objects when settings are changed.
+   * Also handles communications with server.
+  */
   var broadCaster = (function(){
     var updateClient = function(){
       editor.update();
@@ -211,11 +218,11 @@
         "url":"./server/",
         "data":settings
       }).done(function(resp){
-          console.log(resp);
-          updateClient();
+        updateClient();
       });
     };
- 
+
+    // initialize with settings 
     $.get('./server/',function(resp){
       for (var x in resp) settings[x] = resp[x];
       
@@ -226,12 +233,41 @@
     
     var pub = {
       "set":set
-      
     }
     return pub; 
   }());
 
+  /* history undo redo */
+  var history = (function(){
+    var past = [];
+    
+    var pub = {
+      store:function(){
+        var current = canvas.c.toDataURL(); 
+       // var previous = past.length ? past[past.length-1] : 0; 
+      // if (previous && previous == current) return;
+        past.push (current);
+        if (past.length > 10) past.shift();
+      },
+      undo:function(){  
+        if (past.length){
+          var img = new Image;
+          img.onload = function(){
+            canvas.ctx.beginPath();
+            canvas.ctx.clearRect(0,0,settings.width,settings.height);
+            canvas.ctx.drawImage(img, 0, 0);
+          }
 
+          img.src = past.pop();
+        }
+      },
+      redo:function(){
+
+      }  
+    };
+    pub.store();
+    return pub;
+  })();
 /*
   window.onbeforeunload = function() {
       return true;

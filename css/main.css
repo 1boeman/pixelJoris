@@ -12,8 +12,11 @@ body  {
   position:absolute;
   left:0px;
   top:10px;
-  padding:10px;
+  padding:6px;
+  margin:2px 4px;
   width:180px;
+  background:#222;
+  border-radius:3px;
 }
 .controls input[type="text"]{
   width:160px;
@@ -24,7 +27,7 @@ body  {
   display:block;
 }
 #colorHistory{
-  height:60px;
+  height:80px;
   overflow:hidden;
 }
 .colorHistoryBlock{
