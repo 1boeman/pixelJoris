@@ -44,8 +44,30 @@ body  {
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
-
 }
+
+.gallery-container{
+  display:none;
+}
+
+button.editor-show {
+  display:none;
+}
+button {
+  cursor:pointer;
+}
+
+body.gallery button.gallery-show,
+body.gallery #canvas-container{
+  display:none
+}
+
+body.gallery button.editor-show,
+body.gallery .gallery-container{
+  display:block;
+}
+
+.gallery-container,
 #canvas-container {
   left:200px;
   top:10px;

@@ -85,7 +85,7 @@
           for (var i = 0; i < virtualGrid.length; i++){
             if ((x > virtualGrid[i][0] && x <= virtualGrid[i][0]+w) // x-match
                   && (y > virtualGrid[i][1] && y <= virtualGrid[i][1]+w)){ //ymatch           
-              canvas.ctx.fillRect(virtualGrid[i][0],virtualGrid[i][1],w,w);
+              canvas.ctx.fillRect(virtualGrid[i][0]-1,virtualGrid[i][1]-1,w+1,w+1);
               break; 
             } 
           }
@@ -117,7 +117,7 @@
       commitTool(e);
     });
 
-    $cc.mouseup(function(e){
+    $(document).mouseup(function(e){
      drawing = false;
     });
 
@@ -146,8 +146,21 @@
   var controls = (function(editor) {
     var $inputs = $('.controls .control');
     var $buttons = $('.controls .button');
+    var gallery_visible = false;
 
     var handlers = {
+      "gallery": function(){
+        if (!gallery_visible){      
+          gallery.show();
+          gallery_visible = true;
+        } else {
+          gallery.hide();
+          gallery_visible = false
+        }
+      },
+      saveFile: function(){
+        broadCaster.save();     
+      },
       undo: function(){
         history.undo();  
       },
@@ -169,10 +182,12 @@
       setWidth : function() {
         var w = Math.ceil(parseFloat(this.value));
         w = w > 1 ? w : 1;  
-        broadCaster.set('width',this.value);
+        broadCaster.set('width',w);
       },
       setHeight : function() {
-        broadCaster.set('height',this.value);
+        var h = Math.ceil(parseFloat(this.value));
+        h = h > 1 ? h : 1;  
+        broadCaster.set('height',h);
       },
       setTool : function(){
         broadCaster.set('tool',this.value);
@@ -221,7 +236,16 @@
         updateClient();
       });
     };
-
+    var save = function(){
+      dataUrl = canvas.c.toDataURL();  
+      $.post(
+        './server/',{
+          "save":1,
+          "dataUrl":dataUrl
+      },function(resp){
+        alert('done') 
+      });   
+    };
     // initialize with settings 
     $.get('./server/',function(resp){
       for (var x in resp) settings[x] = resp[x];
@@ -232,8 +256,9 @@
     });
     
     var pub = {
-      "set":set
-    }
+      "set":set,
+      "save":save
+    };
     return pub; 
   }());
 
@@ -244,8 +269,8 @@
     var pub = {
       store:function(){
         var current = canvas.c.toDataURL(); 
-       // var previous = past.length ? past[past.length-1] : 0; 
-      // if (previous && previous == current) return;
+        // var previous = past.length ? past[past.length-1] : 0; 
+        // if (previous && previous == current) return;
         past.push (current);
         if (past.length > 10) past.shift();
       },
@@ -268,6 +293,34 @@
     pub.store();
     return pub;
   })();
+
+  var gallery = (function(){
+    var hide = function(){
+      $('body').removeClass('gallery');
+    };
+
+    var show = function(){
+      $('body').addClass('gallery')
+      $.get('./server/',{
+        "gallery":1,
+      },function(resp){
+        var output = [],data;
+        var template = $('#tpl_gallery').html();
+        Mustache.parse(template);
+        for (var date in resp){
+          data = {"date" : date, "images":resp[date]};
+          output.push(Mustache.render(template,data));
+        }
+        $('.gallery-container').html(output.join(''));
+      })
+    };
+    pub = {
+      "show":show,
+      "hide":hide
+    }
+    return pub;  
+  })();
+
 /*
   window.onbeforeunload = function() {
       return true;
