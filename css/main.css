@@ -8,8 +8,9 @@ body  {
   position:relative;
 }
 
+/* controls*/
 .controls{
-  position:absolute;
+  position:fixed;
   left:0px;
   top:10px;
   padding:6px;
@@ -46,10 +47,18 @@ body  {
   -o-user-select: none;
 }
 
-.gallery-container{
-  display:none;
+body.noScroll{
+  overflow:hidden;
 }
-
+.noscroll-off{
+  display:none
+}
+body.noScroll .noscroll-on{
+  display:none
+}
+body.noScroll .noscroll-off{
+  display:block;
+} 
 button.editor-show {
   display:none;
 }
@@ -67,10 +76,30 @@ body.gallery .gallery-container{
   display:block;
 }
 
+/* gallery */
+.gallery-item-toolbar{
+  display:block
+}
+.edit-image-button{
+  font-size:40px;
+  padding:8px;
+  cursor:pointer;
+  display:inline-block;
+  opacity:0.5;
+}
+.edit-image-button:hover{
+  opacity:1;
+}
+ 
+.gallery-container{
+  display:none;
+}
+
 .gallery-container,
 #canvas-container {
   left:200px;
   top:10px;
+  padding-left:12px;
   cursor:crosshair;
   position:absolute;
   user-select: none;
@@ -84,7 +113,7 @@ body.gallery .gallery-container{
   opacity:0.5;
   position:absolute; 
   top:0px;
-  left:0px;
+  left:12px;
 }
 
 #hetCanvas {

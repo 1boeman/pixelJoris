@@ -149,6 +149,20 @@
     var gallery_visible = false;
 
     var handlers = {
+      "loadImage":function(){
+        var img = new Image;
+        img.onload = function(){
+          canvas.ctx.beginPath();
+          canvas.ctx.clearRect(0,0,settings.width,settings.height);
+          canvas.ctx.drawImage(img, 0, 0);
+        }
+        
+        img.src = $(this).data('src');
+
+      },
+      "noScroll": function(){   
+        $('body').toggleClass('noScroll');
+      },
       "gallery": function(){
         if (!gallery_visible){      
           gallery.show();
@@ -203,7 +217,8 @@
     });  
    
     var pub = {
-      update:function(){
+      "handlers":handlers,
+      "update":function(){
         $inputs.each(function(){
           var relevantSetting = $(this).data('source');
           if(settings[relevantSetting] != $(this).val()){
@@ -219,21 +234,24 @@
    * Also handles communications with server.
   */
   var broadCaster = (function(){
-    var updateClient = function(){
+    var updateClient = function(resp,callback){
+      var callback = callback || function(){};
       editor.update();
       controls.update(); 
       canvas.update();
-      tool.update(); 
+      tool.update();
+      callback(); 
     };
 
-    var set = function(name,value){
+    var set = function(name,value,callback){
+      var callback = callback || function(){};
       settings[name] = value;
       $.ajax({
         "method":"POST",
         "url":"./server/",
         "data":settings
       }).done(function(resp){
-        updateClient();
+        updateClient(resp,callback);
       });
     };
     var save = function(){
@@ -311,7 +329,23 @@
           data = {"date" : date, "images":resp[date]};
           output.push(Mustache.render(template,data));
         }
-        $('.gallery-container').html(output.join(''));
+        $('.gallery-container')
+          .html(output.join(''))
+          .find('.edit-image-button')
+          .click(function(){
+            var button = this;
+            if (confirm ('Open this image in Editor?')){
+              var img = new Image;
+              img.onload = function(){
+                broadCaster.set('width',img.width);
+                broadCaster.set('height',img.height,function(){
+                  controls.handlers["loadImage"].apply(button);
+                  controls.handlers["gallery"].apply(button);
+                });
+              }
+              img.src = $(button).data('src');
+            }
+          });
       })
     };
     pub = {

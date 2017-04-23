@@ -7,7 +7,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
       <link rel="stylesheet" href="./css/main.css">
-
   </head>
   <body>
     <div id="main">
@@ -39,13 +38,23 @@
             <div id="colorHistory"></div>
           </div>
         </div>
+      
         <div class="control-group">
-         <a id="undoButton" class="button" data-handle="undo"><button>Undo</button></a>
+           <a id="undoButton" class="button" data-handle="undo"><button>Undo</button></a>
         </div>
         <div class="control-group">
           <a id="galleryLnk" class="button" data-handle="gallery">
             <button class="editor-show">Editor</button>
             <button class="gallery-show" >Gallery</button></a>
+        </div>
+       <div class="control-group">
+          <a id="noScroll" class="button" data-handle="noScroll">
+            <button class="noscroll-on">NoScroll</button>
+             <button class="noscroll-off">Scroll</button>
+
+          </a>
+       </div>  
+       <div class="control-group">
           <a id="saveLnk" class="button" data-handle="saveFile"><button>Save</button></a>
           <a id="downloadLnk" class="button" download="pixeljoris.jpg" data-handle="downloadFile"><button>Download</button></a>
         </div>
@@ -59,19 +68,18 @@
     <script src="./js/floodfill.js"></script>
     <script src="./js/mustache.min.js"></script>
     <script src="./js/main.js"></script>
-
-
     <script id="tpl_gallery" type="x-tmpl-mustache">
       <div class="im">
         <h2>{{date}}</h2>
-
         {{#images}}
-          <div class="gallery_item"><img src="./gallery/{{date}}/{{.}}" /></div>
+          <div class="gallery_item">
+            <div class="gallery-item-toolbar">
+              <span data-src="./gallery/{{date}}/{{.}}" class="edit-image-button">&#9998;</span>
+            </div>
+            <img src="./gallery/{{date}}/{{.}}" />
+          </div>
         {{/images}}
       </div>
     </script>
-
-
-
   </body>
 </html>
