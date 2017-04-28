@@ -67,16 +67,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./js/floodfill.js"></script>
     <script src="./js/mustache.min.js"></script>
+    <script src="./js/jquery.lazyload.min.js"></script>
     <script src="./js/main.js"></script>
     <script id="tpl_gallery" type="x-tmpl-mustache">
-      <div class="im">
+      <div class="images">
         <h2>{{date}}</h2>
         {{#images}}
           <div class="gallery_item">
             <div class="gallery-item-toolbar">
-              <span data-src="./gallery/{{date}}/{{.}}" class="edit-image-button">&#9998;</span>
+              <span data-src="./gallery/{{date}}/{{file_name}}" class="icon edit-image-button">&#9998;</span>
+              <span data-src="./gallery/{{date}}/{{file_name}}" class="icon delete-image-button">&#10007;</span>
             </div>
-            <img src="./gallery/{{date}}/{{.}}" />
+            <img class="lazy" {{{attr}}} data-original="./gallery/{{date}}/{{file_name}}" />
           </div>
         {{/images}}
       </div>

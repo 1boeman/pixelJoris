@@ -80,26 +80,30 @@ body.gallery .gallery-container{
 .gallery-item-toolbar{
   display:block
 }
-.edit-image-button{
+
+.gallery-item-toolbar .icon{
   font-size:40px;
   padding:8px;
   cursor:pointer;
   display:inline-block;
   opacity:0.5;
+  transition: opacity 0.5s ease-in-out;
+  margin-right:10px;
+
 }
-.edit-image-button:hover{
+.gallery-item-toolbar .icon:hover{
   opacity:1;
 }
  
 .gallery-container{
-  display:none;
+  display:none; 
+  padding-left:12px;
 }
 
 .gallery-container,
 #canvas-container {
   left:200px;
   top:10px;
-  padding-left:12px;
   cursor:crosshair;
   position:absolute;
   user-select: none;
@@ -113,7 +117,7 @@ body.gallery .gallery-container{
   opacity:0.5;
   position:absolute; 
   top:0px;
-  left:12px;
+  left:0px;
 }
 
 #hetCanvas {

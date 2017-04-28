@@ -52,7 +52,7 @@
         canvas.ctx.fillStyle=settings.color;
         var w = settings.gridWidth;
         this.commit = function(x,y){
-          canvas.ctx.fillRect(x,y,w,w);
+          canvas.ctx.fillRect(x-(w/2),y-(w/2),w,w);
         }
       },
  
@@ -345,7 +345,13 @@
               }
               img.src = $(button).data('src');
             }
-          });
+        });
+        $('.images img.lazy').lazyload({
+          "effect":"fadeIn",
+          "threshold" : 200
+
+        });
+ 
       })
     };
     pub = {

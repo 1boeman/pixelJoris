@@ -49,7 +49,14 @@ function gallery(){
       $current_subdir_contents = scandir(GALLERY.'/'.$dir);
       foreach($current_subdir_contents as $file_name){
         if (substr($file_name,0,1) != '.'){
-          $rv[$dir][]= $file_name;
+          list($width, $height, $type, $attr) = getimagesize(GALLERY.'/'.$dir.'/'.$file_name); 
+          $rv[$dir][]= array(
+            'file_name' => $file_name,
+            'width' => $width,
+            'height' => $height,
+            'type' => $type,
+            'attr' => $attr,
+          );
         }
       }
     }    
