@@ -131,7 +131,7 @@
       
       // check if event took place inside canvas area
       if ((x >= 0 && x <= settings.width)   
-           && (y >= 0 && y <= settings.width)) {
+           && (y >= 0 && y <= settings.height)) {
         tool.commit(x,y);
       }
     };
@@ -179,7 +179,7 @@
         history.undo();  
       },
       downloadFile: function(){
-        var dt = canvas.c.toDataURL('image/jpeg');
+        var dt = canvas.c.toDataURL();
         this.href = dt;
       },
       setGridWidth :function(){
@@ -349,7 +349,6 @@
         $('.images img.lazy').lazyload({
           "effect":"fadeIn",
           "threshold" : 200
-
         });
  
       })
