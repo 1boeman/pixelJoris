@@ -7,11 +7,11 @@
 
   var settings = { 
     "set" : 1,
-    "width" : 100,
-    "height" : 100,
+    "width" : 600,
+    "height" : 600,
     "color" :'#FFFFFF', 
-    "gridWidth" : 20,
-    "tool" : "Pixel",
+    "gridWidth" : 50,
+    "tool" : "Grid",
   }; 
   
   var canvas = (function(c){
@@ -147,7 +147,7 @@
     var $inputs = $('.controls .control');
     var $buttons = $('.controls .button');
     var gallery_visible = false;
-
+    var colorHistory = []; 
     var handlers = {
       "loadImage":function(){
         var img = new Image;
@@ -186,11 +186,16 @@
         broadCaster.set('gridWidth',this.value); 
       },
       setColor : function (){
-        var colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+this.value+'" style="background:'+this.value+'" />');     
-        colorHistoryBlock.click(function(){
-          $('.color').val($(this).data('color')).trigger('change');
-        });
-        $('#colorHistory').prepend(colorHistoryBlock);
+        if (colorHistory.indexOf(this.value)== -1){
+          colorHistory.push (this.value);
+          if (colorHistory.length > 12) colorHistory.shift();
+          var colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+this.value+'" style="background:'+this.value+'" />');     
+          colorHistoryBlock.click(function(){
+            $('.color').val($(this).data('color')).trigger('change');
+          });
+          $('#colorHistory').prepend(colorHistoryBlock);
+          console.log(colorHistory);
+        }
         broadCaster.set('color',this.value); 
       },
       setWidth : function() {
@@ -329,8 +334,8 @@
           data = {"date" : date, "images":resp[date]};
           output.push(Mustache.render(template,data));
         }
-        $('.gallery-container')
-          .html(output.join(''))
+        var $galcon =  $('.gallery-container');
+        $galcon.html(output.join(''))
           .find('.edit-image-button')
           .click(function(){
             var button = this;
@@ -345,7 +350,31 @@
               }
               img.src = $(button).data('src');
             }
-        });
+          });
+          $galcon.find('.delete-image-button').click(function(){
+            var button = this;  
+            if (confirm('Delete this image?')){
+              $.post('./server/',{"del":$(button).data('src')},
+                function(resp){ 
+                  var m = [];             
+                  if (resp.length) {
+                    for (var r in resp){
+                      m.push (resp[r] + " was deleted.")
+                    }
+                    alert(m.join("\n"));
+                    if (resp.length == 2){
+                      $(button).parents('.images').hide();
+                    } else {
+                      $(button).parents('.gallery_item').hide();
+                    }
+                  } else {
+                    alert('Nothing was deleted') 
+                  } 
+              },'json');
+            }
+          });
+
+
         $('.images img.lazy').lazyload({
           "effect":"fadeIn",
           "threshold" : 200
@@ -360,14 +389,14 @@
     return pub;  
   })();
 
-/*
+
+
+
+})();
+
   window.onbeforeunload = function() {
       return true;
   };
-
-*/
-
-})();
 
 
 

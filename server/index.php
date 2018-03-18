@@ -71,7 +71,6 @@ function gallery(){
 
 
 if (isset($_REQUEST['gallery'])){
-  
   $gallery = gallery(); 
   echo json_encode($gallery);
   exit;
@@ -85,6 +84,28 @@ if (isset($_REQUEST['set']) ){
     }
   }
 }
+
+if (isset($_REQUEST['del'])){
+  $img = $_REQUEST['del'];
+  $img = explode('/',$img);
+  $dir = dirname(__FILE__);
+  $dir_parent  = implode('/',array($dir,'..','gallery',$img[2]));
+  $result = array(); 
+  $path = implode('/',array($dir,'..','gallery',$img[2],$img[3]));
+  
+  if(finfo_file(finfo_open(FILEINFO_MIME_TYPE),$path) == 'image/png'){
+    unlink($path);
+    $result[]= $img[3]; 
+    $files = glob($dir_parent . "/*");
+    if (empty($files)){
+      rmdir($dir_parent); 
+      $result[]= $img[2]; 
+    } 
+  }
+  echo json_encode($result); 
+  exit;
+}
+
 
 if (isset($_REQUEST['save'])){
   if (isset($_REQUEST['dataUrl'])) {
