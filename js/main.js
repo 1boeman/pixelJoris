@@ -43,9 +43,17 @@
   var tool = (function(){
     var tools = {
       "Bucket" : function(){
+        var busy = 0; 
         canvas.ctx.fillStyle=settings.color;
         this.commit = function(x,y){
-          canvas.ctx.fillFlood(x,y); 
+          if (!busy){
+            busy = 1; 
+            canvas.ctx.fillFlood(x,y);
+            setTimeout(function(){
+              busy=0; 
+            },500);
+          }
+          
         }      
       },
       "Pixel" : function(){
@@ -118,7 +126,7 @@
     });
 
     $(document).mouseup(function(e){
-     drawing = false;
+      drawing = false;
     });
 
     $cc.mousemove(function(e){
@@ -130,8 +138,7 @@
           y = e.pageY - offTop;
       
       // check if event took place inside canvas area
-      if ((x >= 0 && x <= settings.width)   
-           && (y >= 0 && y <= settings.height)) {
+      if ((x >= 0 && x <= settings.width)  && (y >= 0 && y <= settings.height)) {
         tool.commit(x,y);
       }
     };
@@ -288,7 +295,6 @@
   /* history undo redo */
   var history = (function(){
     var past = [];
-    
     var pub = {
       store:function(){
         var current = canvas.c.toDataURL(); 
@@ -374,12 +380,10 @@
             }
           });
 
-
         $('.images img.lazy').lazyload({
           "effect":"fadeIn",
           "threshold" : 200
         });
- 
       })
     };
     pub = {
@@ -388,15 +392,8 @@
     }
     return pub;  
   })();
-
-
-
-
 })();
 
-  window.onbeforeunload = function() {
-      return true;
-  };
-
-
-
+window.onbeforeunload = function() {
+    return true;
+};
