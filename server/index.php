@@ -109,7 +109,7 @@ if (isset($_REQUEST['del'])){
 if (isset($_REQUEST['optimize'])){
   if (isset($_SESSION['fileName'])){
     $currentDir = getCurrentDir(); 
-    $filePath = $currentDir .'/'.$_SESSION['fileName'];
+    $filePath = $currentDir .'/'.escapeshellcmd( $_SESSION['fileName'] );
     $optimised_filePath =  str_replace('.png','_optimised.png', $filePath );
     $optimus =  "pngcrush -reduce $filePath ".$optimised_filePath; 
     shell_exec( $optimus ); 
