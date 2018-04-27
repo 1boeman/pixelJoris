@@ -267,12 +267,20 @@
       });
     };
     var save = function(){
-      dataUrl = canvas.c.toDataURL();  
+      var optimize = true; 
+      var dataUrl = canvas.c.toDataURL();  
       $.post(
         './server/',{
           "save":1,
           "dataUrl":dataUrl
       },function(resp){
+        console.log(resp)
+        console.log(optimize)
+        if (optimize){
+          $.post('./server/',{
+            "optimize":1
+          });
+        }
         alert('done') 
       });   
     };

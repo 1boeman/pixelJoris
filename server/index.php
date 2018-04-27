@@ -106,6 +106,26 @@ if (isset($_REQUEST['del'])){
   exit;
 }
 
+if (isset($_REQUEST['optimize'])){
+  if (isset($_SESSION['fileName'])){
+    $currentDir = getCurrentDir(); 
+    $filePath = $currentDir .'/'.$_SESSION['fileName'];
+    $optimised_filePath =  str_replace('.png','_optimised.png', $filePath );
+    $optimus =  "pngcrush -reduce $filePath ".$optimised_filePath; 
+    shell_exec( $optimus ); 
+    if (file_exists($optimised_filePath)){
+      unlink($filePath); 
+    }
+  }
+}
+
+function getCurrentDir(){
+  $path = GALLERY;
+  $dateDir = date("Y-m-d");
+  if (!is_writable($path)) throw new Exception($path .' is not writable.');
+  return $path.'/'.$dateDir;
+}
+
 
 if (isset($_REQUEST['save'])){
   if (isset($_REQUEST['dataUrl'])) {
@@ -114,20 +134,21 @@ if (isset($_REQUEST['save'])){
       $img = str_replace('data:image/png;base64,', '', $img);
       $img = str_replace(' ', '+', $img);
       $fileData = base64_decode($img);
-      $path = GALLERY;
       $tmp_dir = generate_uuid(); 
-      $tmpPath = $path.'/'.$tmp_dir;
-      if (!is_writable($path)) throw new Exception($path .' is not writable.');
+      $tmpPath = '/tmp/'.$tmp_dir;
+      $dirPath = getCurrentDir(); 
       mkdir($tmpPath);
-      $dateDir = date("Y-m-d");
       $fileName = uniqid('image_',true).'.png';
       $tmpFilePath = $tmpPath.'/'.$fileName;
-      $filePath = $path.'/'.$dateDir.'/'.$fileName;
+      $filePath = $dirPath .'/'. $fileName;
       mkdir (dirname($filePath));
       file_put_contents($tmpFilePath, $fileData);
       copyImage($tmpFilePath,$filePath);
+
+      $_SESSION['fileName'] = $fileName; 
       unlink ($tmpFilePath);
       rmdir($tmpPath);
+
     } catch (Exception $e) {
       //      echo 'Caught exception: ',  $e->getMessage(), "\n";
       echo json_encode(array('Error'=>'Something went wrong'), JSON_FORCE_OBJECT);
