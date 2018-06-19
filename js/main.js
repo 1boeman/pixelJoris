@@ -63,7 +63,17 @@
           canvas.ctx.fillRect(x-(w/2),y-(w/2),w,w);
         }
       },
- 
+      "Circle" : function (){
+        canvas.ctx.fillStyle=settings.color;
+        var w = settings.gridWidth;
+        var threesixty = Math.PI*2;
+        this.commit = function(x,y){
+          canvas.ctx.beginPath();
+          canvas.ctx.arc(x,y,w,0,threesixty,true)
+          canvas.ctx.closePath();
+          canvas.ctx.fill();
+        }
+      },
       "Grid" : function(){
         canvas.ctx.fillStyle=settings.color;
         var w = Math.floor(parseFloat(settings.gridWidth));
