@@ -32,6 +32,19 @@
           <label>Size:</label>
           <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="text" size="4" /> 
         </div>
+        <div class="control-group">
+          <a id="translateLnk" class="button" data-handle="showTranslate">
+            <button class="translate-show">Translate image</button>
+            <button class="translate-hide">Close Translate tool</button></a>
+            <div id="translate-controls">
+              <label>X:</label>
+              <input type="text" id="translate_x" class="input-s" value="0" />
+               <label>Y:</label>
+              <input type="text" id="translate_y" class="input-s" value="0"/>
+              <a id="translate-button" class="button" data-handle="translate"><button>Translate</button></a>
+
+            </div>
+        </div>
         <div class="control-group"> 
           <div class="color-select-container">
             <label>Color:</label>
@@ -51,8 +64,7 @@
        <div class="control-group">
           <a id="noScroll" class="button" data-handle="noScroll">
             <button class="noscroll-on">NoScroll</button>
-             <button class="noscroll-off">Scroll</button>
-
+            <button class="noscroll-off">Scroll</button>
           </a>
        </div>  
        <div class="control-group">

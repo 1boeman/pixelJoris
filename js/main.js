@@ -10,7 +10,7 @@
     "width" : 600,
     "height" : 600,
     "color" :'#FFFFFF', 
-    "gridWidth" : 50,
+    "gridWidth" : 25,
     "tool" : "Grid",
   }; 
   
@@ -177,6 +177,30 @@
         img.src = $(this).data('src');
 
       },
+      "showTranslate": function(){
+        $('body').toggleClass('translate');
+      },
+      "translate": function(){
+        history.store(); 
+        var x = parseFloat($('#translate_x').val());
+        var y = parseFloat($('#translate_y').val());
+        var imgData = canvas.ctx.getImageData(0,0,settings.width, settings.height);
+        var t = function(){
+          canvas.ctx.clearRect(0,0,settings.width,settings.height);
+          canvas.ctx.putImageData(imgData, x,y);
+        }
+        var newWidth = settings.width+x;
+        var newHeight = settings.height+y;
+
+        if (newWidth > settings.width || 
+              newHeight > settings.height){
+          handlers.setWidth(newWidth,function(){
+            handlers.setHeight(newHeight,t);
+          });
+        } else {
+          t(); 
+        }
+      },
       "noScroll": function(){   
         $('body').toggleClass('noScroll');
       },
@@ -211,19 +235,18 @@
             $('.color').val($(this).data('color')).trigger('change');
           });
           $('#colorHistory').prepend(colorHistoryBlock);
-          console.log(colorHistory);
         }
         broadCaster.set('color',this.value); 
       },
-      setWidth : function() {
-        var w = Math.ceil(parseFloat(this.value));
+      setWidth : function(w,callback) {
+        var w = w || Math.ceil(parseFloat(this.value));
         w = w > 1 ? w : 1;  
-        broadCaster.set('width',w);
+        broadCaster.set('width',w,callback);
       },
-      setHeight : function() {
-        var h = Math.ceil(parseFloat(this.value));
+      setHeight : function(h,callback) {
+        var h = h || Math.ceil(parseFloat(this.value));
         h = h > 1 ? h : 1;  
-        broadCaster.set('height',h);
+        broadCaster.set('height',h,callback);
       },
       setTool : function(){
         broadCaster.set('tool',this.value);

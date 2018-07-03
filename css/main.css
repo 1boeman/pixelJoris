@@ -24,6 +24,10 @@ body  {
   padding:2px; 
   border:1px solid white; 
 }
+.controls input[type="text"].input-s{
+  width:60px;
+}
+
 .controls label{
   display:block;
 }
@@ -45,6 +49,25 @@ body  {
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
+}
+
+#translate-controls{
+  padding:12px;
+  background:#444;
+  border:1px solid white;
+  display:none;
+}
+.translate-hide {
+  display:none;  
+}
+body.translate #translate-controls{ 
+  display:block;
+} 
+body.translate .translate-show{ 
+  display:none;
+}
+body.translate .translate-hide{ 
+  display:block;
 }
 
 body.noScroll{
