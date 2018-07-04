@@ -189,8 +189,9 @@
           canvas.ctx.clearRect(0,0,settings.width,settings.height);
           canvas.ctx.putImageData(imgData, x,y);
         }
-        var newWidth = settings.width+x;
-        var newHeight = settings.height+y;
+        
+        var newWidth = parseInt(settings.width)+x;
+        var newHeight = parseInt(settings.height)+y;
 
         if (newWidth > settings.width || 
               newHeight > settings.height){
