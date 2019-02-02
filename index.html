@@ -13,11 +13,11 @@
       <div class="controls">
         <div class="control-group"> 
           <label>Width</label>
-          <input class="control width" data-handle="setWidth" data-source="width" type="text" size="4" />
+          <input class="control width" data-handle="setWidth" data-source="width" type="number" size="4" />
         </div>
         <div class="control-group"> 
           <label>Height</label>
-          <input class="control height" data-handle="setHeight" data-source="height" type="text" size="4" />
+          <input class="control height" data-handle="setHeight" data-source="height" type="number" size="4" />
         </div>
         <div class="control-group"> 
           <label for="sel1">Tool:</label>
@@ -30,20 +30,29 @@
         </div>
         <div class="control-group"> 
           <label>Size:</label>
-          <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="text" size="4" /> 
+          <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="number" size="4" /> 
         </div>
+        <div class="control-group"> 
+          <label>Rotation:</label>
+          <input class="rotation" data-handle="rotate" type="number"  /> 
+          <a id="rotate-button" class="button" data-handle="rotate"><button>Rotate</button></a>
+        </div>
+ 
         <div class="control-group">
           <a id="translateLnk" class="button" data-handle="showTranslate">
-            <button class="translate-show">Translate image</button>
-            <button class="translate-hide">Close Translate tool</button></a>
+            <button class="translate-show">Move image</button>
+            <button class="translate-hide">Close Move tool</button></a>
             <div id="translate-controls">
               <label>X:</label>
-              <input type="text" id="translate_x" class="input-s" value="0" />
+              <input type="number" id="translate_x" class="input-s" value="0" size="3" />
                <label>Y:</label>
-              <input type="text" id="translate_y" class="input-s" value="0"/>
-              <a id="translate-button" class="button" data-handle="translate"><button>Translate</button></a>
+              <input type="number" id="translate_y" class="input-s" value="0" size="3" />
+              <a id="translate-button" class="button" data-handle="translate"><button>Move</button></a>
 
             </div>
+        </div>
+        <div class="control-group"> 
+
         </div>
         <div class="control-group"> 
           <div class="color-select-container">

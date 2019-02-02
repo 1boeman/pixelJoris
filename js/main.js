@@ -7,10 +7,10 @@
 
   var settings = { 
     "set" : 1,
-    "width" : 600,
+    "width" : 800,
     "height" : 600,
     "color" :'#FFFFFF', 
-    "gridWidth" : 25,
+    "gridWidth" : 50,
     "tool" : "Grid",
   }; 
   
@@ -103,7 +103,7 @@
           for (var i = 0; i < virtualGrid.length; i++){
             if ((x > virtualGrid[i][0] && x <= virtualGrid[i][0]+w) // x-match
                   && (y > virtualGrid[i][1] && y <= virtualGrid[i][1]+w)){ //ymatch           
-              canvas.ctx.fillRect(virtualGrid[i][0]-1,virtualGrid[i][1]-1,w+1,w+1);
+              canvas.ctx.fillRect(virtualGrid[i][0]-1,virtualGrid[i][1]-1,w,w);
               break; 
             } 
           }
@@ -166,6 +166,35 @@
     var gallery_visible = false;
     var colorHistory = []; 
     var handlers = {
+			"rotate":function(){
+        var degrees = $('.rotation')[0].value;
+        var img = new Image(); 
+        img.onload = function(){
+          history.store(); 
+          canvas.ctx.clearRect(0,0,settings.width,settings.height);
+          // save the unrotated context of the canvas so we can restore it later
+          // the alternative is to untranslate & unrotate after drawing
+          canvas.ctx.save();
+
+          // move to the center of the canvas
+          canvas.ctx.translate(settings.width/2,settings.height/2);
+          console.log(degrees)
+          console.log(canvas.ctx)
+          // rotate the canvas to the specified degrees
+          canvas.ctx.rotate(degrees*Math.PI/180);
+
+          // draw the image
+          // since the context is rotated, the image will be rotated also
+          
+          canvas.ctx.drawImage(img,-img.width/2,-img.height/2);
+          console.log(img)
+          // we’re done with the rotating so restore the unrotated context
+          canvas.ctx.restore();
+        }
+      
+        img.src = canvas.c.toDataURL(); 
+			},
+
       "loadImage":function(){
         var img = new Image;
         img.onload = function(){
@@ -214,20 +243,20 @@
           gallery_visible = false
         }
       },
-      saveFile: function(){
+      "saveFile": function(){
         broadCaster.save();     
       },
-      undo: function(){
+      "undo": function(){
         history.undo();  
       },
-      downloadFile: function(){
+      "downloadFile": function(){
         var dt = canvas.c.toDataURL();
         this.href = dt;
       },
-      setGridWidth :function(){
+      "setGridWidth":function(){
         broadCaster.set('gridWidth',this.value); 
       },
-      setColor : function (){
+      "setColor": function (){
         if (colorHistory.indexOf(this.value)== -1){
           colorHistory.push (this.value);
           if (colorHistory.length > 12) colorHistory.shift();
@@ -239,17 +268,17 @@
         }
         broadCaster.set('color',this.value); 
       },
-      setWidth : function(w,callback) {
+      "setWidth" : function(w,callback) {
         var w = w || Math.ceil(parseFloat(this.value));
         w = w > 1 ? w : 1;  
         broadCaster.set('width',w,callback);
       },
-      setHeight : function(h,callback) {
+      "setHeight" : function(h,callback) {
         var h = h || Math.ceil(parseFloat(this.value));
         h = h > 1 ? h : 1;  
         broadCaster.set('height',h,callback);
       },
-      setTool : function(){
+      "setTool" : function(){
         broadCaster.set('tool',this.value);
       }
     };
@@ -308,8 +337,6 @@
           "save":1,
           "dataUrl":dataUrl
       },function(resp){
-        console.log(resp)
-        console.log(optimize)
         if (optimize){
           $.post('./server/',{
             "optimize":1
