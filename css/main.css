@@ -51,6 +51,11 @@ body  {
   -o-user-select: none;
 }
 
+#textTool{
+  display:none;
+  position:absolute
+}
+
 #translate-controls{
   padding:12px;
   background:#444;

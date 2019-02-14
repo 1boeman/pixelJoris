@@ -4,16 +4,19 @@
   var container = document.getElementById("canvas-container");
   var offLeft = container.offsetLeft,
       offTop = container.offsetTop;
-
+  var currentTool;
   var settings = { 
     "set" : 1,
-    "width" : 800,
-    "height" : 600,
+    "width" : 1200,
+    "height" : 750,
     "color" :'#FFFFFF', 
     "gridWidth" : 50,
     "tool" : "Grid",
   }; 
   
+  var $textTool = $('#textTool');
+  $textTool.find('textarea').click(function(e){e.stopPropagation()});
+
   var canvas = (function(c){
     var ctx = c.getContext('2d');
     var imgData;
@@ -39,32 +42,40 @@
 
     return pub;
   })(c);
-
+      
   var tool = (function(){
+    var toolIsBusy = 0; 
     var tools = {
-      "Bucket" : function(){
-        var busy = 0; 
-        canvas.ctx.fillStyle=settings.color;
+      "Text" : function(){
         this.commit = function(x,y){
-          if (!busy){
-            busy = 1; 
+          if (!toolIsBusy){
+            toolIsBusy = 1;
+            $textTool
+              .css({'left':x + 'px','top':y + 'px'})
+              .show()
+              .find('textarea')
+              .css({'font-size':settings.gridWidth+'px'}) 
+          }
+        } 
+      },
+      "Bucket" : function(){
+        this.commit = function(x,y){
+          if (!toolIsBusy){
+            toolIsBusy = 1; 
             canvas.ctx.fillFlood(x,y);
             setTimeout(function(){
-              busy=0; 
-            },500);
+              toolIsBusy=0; 
+            },800);
           }
-          
         }      
       },
       "Pixel" : function(){
-        canvas.ctx.fillStyle=settings.color;
         var w = settings.gridWidth;
         this.commit = function(x,y){
           canvas.ctx.fillRect(x-(w/2),y-(w/2),w,w);
         }
       },
       "Circle" : function (){
-        canvas.ctx.fillStyle=settings.color;
         var w = settings.gridWidth;
         var threesixty = Math.PI*2;
         this.commit = function(x,y){
@@ -75,7 +86,6 @@
         }
       },
       "Grid" : function(){
-        canvas.ctx.fillStyle=settings.color;
         var w = Math.floor(parseFloat(settings.gridWidth));
         var $overlay = $('<canvas id="overlay" />');
         $('#canvas-container').append($overlay);
@@ -109,19 +119,24 @@
           }
         }
       }
-    }
+    };
 
-    var currentTool = new tools[settings.tool]();
+    canvas.ctx.fillStyle=settings.color;
+    currentTool = new tools[settings.tool]();
     var pub = {
       "commit":function(x,y){
         currentTool.commit(x,y);
       },
+      "makeNotBusy":function(){
+        toolIsBusy=0;
+      },
       "update":function(){
         $('#overlay').remove();
         var name =  settings['tool'];
+        canvas.ctx.fillStyle=settings.color;
         currentTool = new tools[name]();
       }
-    }
+    };
     return pub;
   })();
   
@@ -162,33 +177,37 @@
   /* control panel */ 
   var controls = (function(editor) {
     var $inputs = $('.controls .control');
-    var $buttons = $('.controls .button');
+    var $buttons = $('.control-group .button');
     var gallery_visible = false;
     var colorHistory = []; 
     var handlers = {
+      "cancelText":function(){
+        $textTool.hide();
+        tool.makeNotBusy(); 
+      },
+      "commitText":function(){
+        var textbox = $textTool;
+        var position = textbox.position();
+        canvas.ctx.font = settings.gridWidth+"px Arial";
+        var lineheight = parseFloat(settings.gridWidth)+(settings.gridWidth/6);
+        var ypos,txt = textbox.find('textarea').val().split('\n');
+        for (var i=0; i < txt.length; i++){
+          ypos = parseFloat(settings.gridWidth) + position.top + (i*lineheight);
+          canvas.ctx.fillText(txt[i],position.left,ypos);
+        }
+        textbox.hide(); 
+        tool.makeNotBusy(); 
+      },
 			"rotate":function(){
         var degrees = $('.rotation')[0].value;
         var img = new Image(); 
         img.onload = function(){
           history.store(); 
           canvas.ctx.clearRect(0,0,settings.width,settings.height);
-          // save the unrotated context of the canvas so we can restore it later
-          // the alternative is to untranslate & unrotate after drawing
           canvas.ctx.save();
-
-          // move to the center of the canvas
           canvas.ctx.translate(settings.width/2,settings.height/2);
-          console.log(degrees)
-          console.log(canvas.ctx)
-          // rotate the canvas to the specified degrees
           canvas.ctx.rotate(degrees*Math.PI/180);
-
-          // draw the image
-          // since the context is rotated, the image will be rotated also
-          
           canvas.ctx.drawImage(img,-img.width/2,-img.height/2);
-          console.log(img)
-          // we’re done with the rotating so restore the unrotated context
           canvas.ctx.restore();
         }
       
@@ -283,11 +302,12 @@
       }
     };
 
-    $inputs.change(function(){ 
+    $inputs.change(function(e){ 
       handlers[$(this).data('handle')].apply(this);
     });  
     
-    $buttons.click(function(){ 
+    $buttons.click(function(e){ 
+      e.stopPropagation();
       handlers[$(this).data('handle')].apply(this);
     });  
    
@@ -370,7 +390,7 @@
         // var previous = past.length ? past[past.length-1] : 0; 
         // if (previous && previous == current) return;
         past.push (current);
-        if (past.length > 10) past.shift();
+        if (past.length > 20) past.shift();
       },
       undo:function(){  
         if (past.length){
