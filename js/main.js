@@ -181,6 +181,26 @@
     var gallery_visible = false;
     var colorHistory = []; 
     var handlers = {
+      "scale":function(){
+        history.store(); 
+        var c = canvas.ctx;
+        var scale = parseFloat($('#schaal').val());
+        var crop = $('#schaal-crop').get(0).checked;  
+        var current = canvas.c.toDataURL(); 
+        var img = new Image;
+          img.onload = function(){
+            c.beginPath();
+            c.clearRect(0,0,settings.width,settings.height);
+            c.scale(scale,scale);
+            c.drawImage(img, 0, 0);
+            if (crop){
+              handlers.setWidth(settings.width*scale);
+              handlers.setHeight(settings.height*scale);
+            }
+            c.scale(1/scale,1/scale);
+          }
+          img.src = current; 
+      },
       "cancelText":function(){
         $textTool.hide();
         tool.makeNotBusy(); 

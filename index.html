@@ -35,10 +35,19 @@
         </div>
         <div class="control-group"> 
           <label>Rotation:</label>
-          <input class="rotation" data-handle="rotate" type="number"  /> 
-          <a id="rotate-button" class="button" data-handle="rotate"><button>Rotate</button></a>
+          <input class="rotation" data-handle="rotate" value="0" type="number"  /> 
+          <a id="rotate-button" class="button"  data-handle="rotate"><button>Rotate</button></a>
         </div>
- 
+         <div class="control-group"> 
+          <label>Scale:</label>
+          <input class="schaal" id="schaal"  type="number" value="1"  /> 
+          <label>
+          <input type="checkbox" id="schaal-crop" checked /> auto-crop
+          </label>
+          <a id="scale-button" class="button" data-handle="scale"><button>Apply scale</button></a>
+        </div>
+
+
         <div class="control-group">
           <a id="translateLnk" class="button" data-handle="showTranslate">
             <button class="translate-show">Move image</button>
