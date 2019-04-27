@@ -19,6 +19,7 @@ body  {
   background:#222;
   border-radius:3px;
 }
+.controls input[type="number"],
 .controls input[type="text"]{
   width:160px;
   padding:2px; 

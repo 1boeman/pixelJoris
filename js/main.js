@@ -86,14 +86,14 @@
         }
       },
       "Grid" : function(){
-        var w = Math.floor(parseFloat(settings.gridWidth));
+        var w = parseFloat(settings.gridWidth);
         var $overlay = $('<canvas id="overlay" />');
         $('#canvas-container').append($overlay);
         $overlay[0].width = canvas.c.width;
         $overlay[0].height = canvas.c.height;
         var octx = $overlay[0].getContext('2d');
-        var horizontalBlox = Math.ceil(canvas.c.width/w);
-        var verticalBlox = Math.ceil(canvas.c.height/w);
+        var horizontalBlox = canvas.c.width/w;
+        var verticalBlox = canvas.c.height/w;
         var block,i,j,x,y;  
         var virtualGrid = [];         
         octx.strokeStyle="green";
