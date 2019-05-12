@@ -57,6 +57,24 @@ body  {
   position:absolute
 }
 
+.patternView{
+  position:absolute; 
+  width:400%; 
+  height:30000px;
+  top:0px;
+  left:0px;
+  background-color:black;
+}
+.patternViewCloser{
+  position:fixed;
+  top:8px;
+  left:8px;
+  padding:10px 20px;
+  border:4px solid #ccc;
+  background:white;
+  color:black;
+  cursor:pointer;
+}
 #translate-controls{
   padding:12px;
   background:#444;

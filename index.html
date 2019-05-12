@@ -11,6 +11,29 @@
   <body>
     <div id="main">
       <div class="controls">
+       <div class="control-group">
+          <a id="saveLnk" class="button" data-handle="saveFile"><button>Save</button></a>
+          <a id="downloadLnk" class="button" download="pixeljoris.jpg" data-handle="downloadFile"><button>Download</button></a>
+        </div>
+         <div class="control-group">
+           <a id="undoButton" class="button" data-handle="undo"><button>Undo</button></a>
+        </div>
+        <div class="control-group">
+          <a id="galleryLnk" class="button" data-handle="gallery">
+            <button class="editor-show">Editor</button>
+            <button class="gallery-show" >Gallery</button></a>
+        </div>
+       <div class="control-group">
+          <a id="noScroll" class="button" data-handle="noScroll">
+            <button class="noscroll-on">NoScroll</button>
+            <button class="noscroll-off">Scroll</button>
+          </a>
+       </div>  
+       <div class="control-group">
+          <a class="button" data-handle="patternViewer">
+            <button class="pattern-show" >Pattern view</button></a>
+        </div>
+  
         <div class="control-group"> 
           <label>Width</label>
           <input class="control width" data-handle="setWidth" data-source="width" type="number" size="4" />
@@ -72,25 +95,7 @@
           </div>
         </div>
       
-        <div class="control-group">
-           <a id="undoButton" class="button" data-handle="undo"><button>Undo</button></a>
-        </div>
-        <div class="control-group">
-          <a id="galleryLnk" class="button" data-handle="gallery">
-            <button class="editor-show">Editor</button>
-            <button class="gallery-show" >Gallery</button></a>
-        </div>
-       <div class="control-group">
-          <a id="noScroll" class="button" data-handle="noScroll">
-            <button class="noscroll-on">NoScroll</button>
-            <button class="noscroll-off">Scroll</button>
-          </a>
-       </div>  
-       <div class="control-group">
-          <a id="saveLnk" class="button" data-handle="saveFile"><button>Save</button></a>
-          <a id="downloadLnk" class="button" download="pixeljoris.jpg" data-handle="downloadFile"><button>Download</button></a>
-        </div>
-      </div>  
+     </div>  
       <div id="canvas-container">
           <canvas id="hetCanvas"></canvas>
           <div id="textTool"><textarea></textarea>

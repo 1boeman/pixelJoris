@@ -181,6 +181,16 @@
     var gallery_visible = false;
     var colorHistory = []; 
     var handlers = {
+      "patternViewer":function(){
+        var dataUrl = canvas.c.toDataURL();  
+        $('#main').append('<div style="background-image:url('+dataUrl+')" class="patternView"></div>')
+        $('#main').append('<div class="patternViewCloser"> &times; </div>')
+        $('.patternViewCloser').click(function(){
+          $('.patternView').remove();
+          $(this).remove();
+          window.scrollTo(0,0); 
+        });
+      },
       "scale":function(){
         history.store(); 
         var c = canvas.ctx;
