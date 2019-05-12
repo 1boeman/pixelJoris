@@ -380,9 +380,16 @@
         if (optimize){
           $.post('./server/',{
             "optimize":1
+          },function(resp){
+            if (resp['flash_message']){
+              alert(resp['flash_message']);  
+            }else {
+              alert('Done')
+            }
           });
+        } else {
+          alert('done') 
         }
-        alert('done') 
       });   
     };
     // initialize with settings 

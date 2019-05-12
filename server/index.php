@@ -4,6 +4,15 @@ header('Content-Type: application/json');
 
 define ('GALLERY', dirname(__FILE__).'/../gallery');
 
+if (!is_dir(GALLERY)) {
+  exit(GALLERY .' is not a directory');
+} elseif (!is_readable(GALLERY)) {
+  exit(GALLERY.' cannot be read');
+} elseif (!is_writable(GALLERY)) {
+  exit(GALLERY .' cannot be written to');
+}
+
+
 function copyImage( $filePath, $savePath ){
 
   $colorRgb = array('red' => 0, 'green' => 0, 'blue' => 0);  //background color
@@ -42,6 +51,7 @@ function set( $name, $value ){
 
 function gallery(){
   $subdirs = scandir(GALLERY,SCANDIR_SORT_DESCENDING);
+  
   $rv = array();
   foreach($subdirs as $dir){
     if (substr($dir,0,2) == '20'){
@@ -112,9 +122,11 @@ if (isset($_REQUEST['optimize'])){
     $filePath = $currentDir .'/'.escapeshellcmd( $_SESSION['fileName'] );
     $optimised_filePath =  str_replace('.png','_optimised.png', $filePath );
     $optimus =  "pngcrush -reduce $filePath ".$optimised_filePath; 
-    shell_exec( $optimus ); 
-    if (file_exists($optimised_filePath)){
+    $resp = shell_exec( $optimus ); 
+    if (file_exists($optimised_filePath)) {
       unlink($filePath); 
+    }else{
+      $_SESSION['flash_message'] = 'Done, but png_crush failed'; 
     }
   }
 }
@@ -158,3 +170,4 @@ if (isset($_REQUEST['save'])){
 }
 
 echo json_encode($_SESSION,JSON_FORCE_OBJECT);
+if (isset($_SESSION['flash_message'])) unset($_SESSION['flash_message']);
