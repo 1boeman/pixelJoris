@@ -57,17 +57,29 @@
           <input class="control size" data-handle="setGridWidth" data-source="gridWidth" type="number" size="4" /> 
         </div>
         <div class="control-group"> 
-          <label>Rotation:</label>
-          <input class="rotation" data-handle="rotate" value="0" type="number"  /> 
-          <a id="rotate-button" class="button"  data-handle="rotate"><button>Rotate</button></a>
+          <a class="button" data-handle="showRotate">
+            <button class="rotate-show">Rotate image</button>
+            <button class="rotate-hide">Close Rotate tool</button>
+           </a>
+          <div id="rotate-tool">
+            <label>Rotation:</label>
+            <input class="rotation" data-handle="rotate" value="0" type="number"  /> 
+            <a id="rotate-button" class="button"  data-handle="rotate"><button>Rotate</button></a>
+          </div>
         </div>
-         <div class="control-group"> 
-          <label>Scale:</label>
-          <input class="schaal" id="schaal"  type="number" value="1"  /> 
-          <label>
-          <input type="checkbox" id="schaal-crop" checked /> auto-crop
-          </label>
-          <a id="scale-button" class="button" data-handle="scale"><button>Apply scale</button></a>
+        <div class="control-group"> 
+           <a class="button" data-handle="showScale">
+            <button class="scale-show">Scale image</button>
+            <button class="scale-hide">Close Scale tool</button>
+           </a>
+          <div id="scale-tool"> 
+            <label>Scale:</label>
+            <input class="schaal" id="schaal"  type="number" value="1"  /> 
+            <label>
+            <input type="checkbox" id="schaal-crop" checked /> auto-crop
+            </label>
+            <a id="scale-button" class="button" data-handle="scale"><button>Apply scale</button></a>
+          </div>
         </div>
 
 
@@ -85,14 +97,13 @@
             </div>
         </div>
         <div class="control-group"> 
-
-        </div>
-        <div class="control-group"> 
           <div class="color-select-container">
-            <label>Color:</label>
+           <label>Color:</label>
             <input type="color" class="control color" data-handle="setColor" data-source="color" value="#FFFFFF" />
+            <a class="button" data-handle="getAllColors"><button>Sample image</button></a>
+ 
             <div id="colorHistory"></div>
-          </div>
+         </div>
         </div>
       
      </div>  

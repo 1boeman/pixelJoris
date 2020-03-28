@@ -9,11 +9,25 @@
     "set" : 1,
     "width" : 1200,
     "height" : 750,
-    "color" :'#FFFFFF', 
+    "color" :'#FFFFFF',
+    "colorHistory": '',
     "gridWidth" : 50,
     "tool" : "Grid",
-  }; 
-  
+  };
+  var globalInit = function(){
+    controls.init();
+  };
+
+	function rgb2hex(rgb) {
+		rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+
+		function hex(x) {
+			return ("0" + parseInt(x).toString(16)).slice(-2);
+		}
+		return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+	}
+	
+
   var $textTool = $('#textTool');
   $textTool.find('textarea').click(function(e){e.stopPropagation()});
 
@@ -180,7 +194,33 @@
     var $buttons = $('.control-group .button');
     var gallery_visible = false;
     var colorHistory = []; 
+    var addColorHistoryBlock = function(value){
+      let colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+value+'" style="background:'+value+'" />');     
+      colorHistoryBlock.click(function(){
+        $('.color').val($(this).data('color')).trigger('change');
+      });
+      $('#colorHistory').prepend(colorHistoryBlock);
+    };
     var handlers = {
+      "getAllColors":function(){
+  			$('#colorHistory').html('');  
+				var colorList =[];
+				var imgData = canvas.ctx.getImageData(0,0,settings.width, settings.height);
+  			var data = imgData.data;
+				for (let i = 0, n = data.length; i < n; i += 4) {
+					var r = data[i];
+					var g = data[i + 1];
+					var b = data[i + 2];
+					var hex = rgb2hex("rgb(" + r + "," + g + "," + b + ")");
+					if ($.inArray(hex, colorList) == -1) {
+						addColorHistoryBlock(hex);
+						colorList.push(hex);
+					}
+				}
+				colorHistory = colorList;		
+			 	broadCaster.set('colorHistory',colorHistory.join(",")); 
+        
+      },
       "patternViewer":function(){
         var dataUrl = canvas.c.toDataURL();  
         $('#main').append('<div style="background-image:url('+dataUrl+')" class="patternView"></div>')
@@ -255,6 +295,12 @@
         img.src = $(this).data('src');
 
       },
+      "showScale": function(){
+        $('body').toggleClass('scale');
+      },
+      "showRotate": function(){
+        $('body').toggleClass('rotate');
+      },
       "showTranslate": function(){
         $('body').toggleClass('translate');
       },
@@ -306,14 +352,13 @@
         broadCaster.set('gridWidth',this.value); 
       },
       "setColor": function (){
-        if (colorHistory.indexOf(this.value)== -1){
+        if (colorHistory.indexOf(this.value) == -1){
           colorHistory.push (this.value);
-          if (colorHistory.length > 12) colorHistory.shift();
-          var colorHistoryBlock = $('<div class="colorHistoryBlock" data-color="'+this.value+'" style="background:'+this.value+'" />');     
-          colorHistoryBlock.click(function(){
-            $('.color').val($(this).data('color')).trigger('change');
-          });
-          $('#colorHistory').prepend(colorHistoryBlock);
+          if (colorHistory.length > 100) {
+            colorHistory.shift();
+          }
+          addColorHistoryBlock(this.value);
+          broadCaster.set('colorHistory',colorHistory.join(",")); 
         }
         broadCaster.set('color',this.value); 
       },
@@ -343,6 +388,14 @@
    
     var pub = {
       "handlers":handlers,
+      "init":function(){
+        if (typeof settings['colorHistory'] == 'string'){
+          colorHistory = settings['colorHistory'].split(',');
+          for (let c in colorHistory){
+            addColorHistoryBlock(colorHistory[c]);
+          }
+        }
+      },
       "update":function(){
         $inputs.each(function(){
           var relevantSetting = $(this).data('source');
@@ -405,9 +458,9 @@
     // initialize with settings 
     $.get('./server/',function(resp){
       for (var x in resp) settings[x] = resp[x];
-      
       settings['set'] = 1; 
       updateClient();
+      globalInit();
       $('#main').css('opacity',1)
     });
     

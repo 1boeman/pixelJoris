@@ -33,14 +33,14 @@ body  {
   display:block;
 }
 #colorHistory{
-  height:80px;
-  overflow:hidden;
+  max-height:300px;
+  overflow:auto;
 }
 .colorHistoryBlock{
   width:33%;
   height:19px;
   border-top:1px solid black;
-  float:left;
+  display:inline-block;
   cursor:pointer;
 }
 .control-group {
@@ -75,6 +75,9 @@ body  {
   color:black;
   cursor:pointer;
 }
+
+
+
 #translate-controls{
   padding:12px;
   background:#444;
@@ -83,6 +86,27 @@ body  {
 }
 .translate-hide {
   display:none;  
+}
+
+body.scale #scale-tool,
+.scale .scale-hide{
+  display:block;
+}
+#scale-tool, .scale-hide, .scale .scale-show {
+  display:none;
+} 
+
+body.rotate #rotate-tool,
+.rotate .rotate-hide{
+  display:block;
+} 
+#rotate-tool, .rotate-hide, .rotate .rotate-show {
+  display:none;
+} 
+
+
+body.translate .translate-show{ 
+  display:none;
 }
 body.translate #translate-controls{ 
   display:block;
@@ -122,6 +146,7 @@ body.gallery button.editor-show,
 body.gallery .gallery-container{
   display:block;
 }
+
 
 /* gallery */
 .gallery-item-toolbar{

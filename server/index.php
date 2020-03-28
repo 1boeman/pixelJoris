@@ -87,7 +87,7 @@ if (isset($_REQUEST['gallery'])){
 }
 
 if (isset($_REQUEST['set']) ){
-  $settings = array('width','height','tool','color','gridWidth');
+  $settings = array('width','height','tool','color','gridWidth','colorHistory');
   foreach($_REQUEST as $name => $value){
     if (in_array($name, $settings)) {
       set($name, $value);
