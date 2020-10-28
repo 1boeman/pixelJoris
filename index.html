@@ -81,8 +81,17 @@
             <a id="scale-button" class="button" data-handle="scale"><button>Apply scale</button></a>
           </div>
         </div>
-
-
+        <div class="control-group">
+          <a id="importlnk" class="button" data-handle="showImport">
+            <button class="import-show">Import image</button>
+            <button class="import-hide">Close Import</button>
+          </a> 
+            <div id="import-controls">
+              <label>Image url</label>
+              <input type="text" id="import_url" />
+              <a id="import-button" class="button" data-handle="import"><button>Import</button></a>
+            </div>
+        </div>
         <div class="control-group">
           <a id="translateLnk" class="button" data-handle="showTranslate">
             <button class="translate-show">Move image</button>
@@ -121,6 +130,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./js/floodfill.js"></script>
     <script src="./js/mustache.min.js"></script>
+    <script src="./js/drags.js"></script>
     <script src="./js/jquery.lazyload.min.js"></script>
     <script src="./js/main.js"></script>
     <script id="tpl_gallery" type="x-tmpl-mustache">

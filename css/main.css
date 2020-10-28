@@ -33,7 +33,7 @@ body  {
   display:block;
 }
 #colorHistory{
-  max-height:300px;
+  max-height:250px;
   overflow:auto;
 }
 .colorHistoryBlock{
@@ -96,6 +96,15 @@ body.scale #scale-tool,
   display:none;
 } 
 
+body.import #import-controls,
+.import .import-hide{
+  display:block;
+} 
+#import-controls, .import-hide, .import .import-show {
+  display:none;
+} 
+
+
 body.rotate #rotate-tool,
 .rotate .rotate-hide{
   display:block;
@@ -148,6 +157,8 @@ body.gallery .gallery-container{
 }
 
 
+
+
 /* gallery */
 .gallery-item-toolbar{
   display:block
@@ -172,6 +183,7 @@ body.gallery .gallery-container{
   padding-left:12px;
 }
 
+/* canvas editor */
 .gallery-container,
 #canvas-container {
   left:200px;
@@ -190,8 +202,20 @@ body.gallery .gallery-container{
   position:absolute; 
   top:0px;
   left:0px;
+  z-index:1000;
 }
 
 #hetCanvas {
   border:1px solid white; 
 }
+
+#import_container{
+  position:absolute; 
+  top:0px;
+  left:0px;
+  opacity:0.9;
+  z-index:2000;
+}
+
+
+

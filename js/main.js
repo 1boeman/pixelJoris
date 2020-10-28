@@ -293,8 +293,11 @@
         }
         
         img.src = $(this).data('src');
-
       },
+      "showImport": function(){
+        $('body').toggleClass('import');
+      },
+ 
       "showScale": function(){
         $('body').toggleClass('scale');
       },
@@ -303,6 +306,32 @@
       },
       "showTranslate": function(){
         $('body').toggleClass('translate');
+      },
+      "import":function(){
+        var path = $.trim($('#import_url').val());
+        if (path.length){
+          var $container = $('#import_container');
+          if (!$container.length) {
+            $container = $('<div id="import_container">dew</div>')
+          }; 
+          var $img = $('<img class="import_img" src="'+path+'" />')
+
+          $img.drags();
+          $img.dblclick(function(e){
+            var ix = this.x-1;
+            var iy = this.y-1;
+            var img = new Image();
+            img.onload = function(){
+              history.store(); 
+              $img.remove();
+              canvas.ctx.drawImage(img,ix,iy);
+            };
+            img.src = path; 
+          });
+
+          $container.html($img);
+          $('#canvas-container').append($container);
+        }
       },
       "translate": function(){
         history.store(); 
@@ -352,7 +381,10 @@
         broadCaster.set('gridWidth',this.value); 
       },
       "setColor": function (){
-        if (colorHistory.indexOf(this.value) == -1){
+        if (colorHistory[colorHistory.length-1]!= this.value
+            && colorHistory[colorHistory.length-2]!= this.value
+              && colorHistory[colorHistory.length-3]!= this.value
+        ){
           colorHistory.push (this.value);
           if (colorHistory.length > 100) {
             colorHistory.shift();
@@ -576,3 +608,4 @@
 window.onbeforeunload = function() {
     return true;
 };
+
